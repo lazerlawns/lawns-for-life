@@ -67,6 +67,22 @@ Many features now depend on the server job `/api/cron` (every 5 minutes): the ov
 - **Push notifications (Firebase):** check device registration works for employees, so driver alerts reach them.
 - **Twilio voice webhook:** check the URL from Settings → Integrations is set on the Twilio number.
 
+## 5b. New since the last prompt (October 9)
+
+- **The 5-minute background job now does more**, so please confirm it really runs every 5 minutes (section 3): bulk
+  messages keep sending from it when nobody has the page open, and the nightly move of history older than 90 days
+  (1am to 6am) runs from it.
+- **Older history:** you've already created the `org_archive` table, thank you. After tonight, check
+  Settings → Data & import → Older history shows records moved, and that the logs show no `history:` errors.
+- **Spreadsheet library security fix:** `xlsx` 0.18.5 (used to import spreadsheets) has two known security problems.
+  The fixed version isn't on npm; switch the dependency to SheetJS's own build:
+  `"xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"`, refresh `bun.lock`, and check an Excel import still works.
+- **Other dependency warnings** (`bun audit`): the rest are in build and development tools (vite, eslint, esbuild,
+  devtools), not in the app people use. Run `bun update` for those when convenient and check the build still passes.
+- **Texts and STOP:** replies of STOP are recorded when Twilio refuses a text (error 21610). Please also point the
+  Twilio number's incoming-message webhook at the app if you can, so STOP replies are recorded straight away, and
+  confirm the Australian number is registered for sending (sender ID rules).
+
 ## 6. Data safety (please double check)
 
 Real business data was lost once. Do not delete or overwrite any organisation data. Do not run the example-data clear on my behalf. Confirm the data guard and the hourly backups (`supabase/backups-more-often.sql`) are running, and show me the newest backup's timestamp and row counts for my account.
