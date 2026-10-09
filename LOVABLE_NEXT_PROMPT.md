@@ -79,9 +79,10 @@ Many features now depend on the server job `/api/cron` (every 5 minutes): the ov
   `"xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"`, refresh `bun.lock`, and check an Excel import still works.
 - **Other dependency warnings** (`bun audit`): the rest are in build and development tools (vite, eslint, esbuild,
   devtools), not in the app people use. Run `bun update` for those when convenient and check the build still passes.
-- **Texts and STOP:** replies of STOP are recorded when Twilio refuses a text (error 21610). Please also point the
-  Twilio number's incoming-message webhook at the app if you can, so STOP replies are recorded straight away, and
-  confirm the Australian number is registered for sending (sender ID rules).
+- **Texts and STOP:** replies of STOP are recorded when Twilio refuses the next text (error 21610). The app has no
+  incoming-text webhook yet: if you can, add one (a route like `/api/twilio-sms` that records client replies in their
+  chat and marks "STOP" as unsubscribed via `markUnsubscribed` in `src/lib/campaign.server.ts`) and set it on the Twilio
+  number. Also confirm the Australian number is registered for sending (sender ID rules).
 
 ## 6. Data safety (please double check)
 
